@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Máquina de Café</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #6b3e26;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    button {
+      flex: 1 1 45%;
+      padding: 10px;
+      background-color: #6b3e26;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #8a5a3c;
+    }
+
+    pre {
+      background-color: #f2f2f2;
+      padding: 10px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+
+    .log {
+      margin-top: 15px;
+      color: #333;
+    }
+
+    input[type="number"] {
+      width: 80px;
+      padding: 5px;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>☕ Máquina de Café</h1>
+
+    <div class="buttons">
+      <button onclick="inserirCentimos()">Inserir Cêntimos</button>
+      <button onclick="fazerCafe()">Fazer Café</button>
+      <button onclick="cancelar()">Cancelar</button>
+      <button onclick="esvaziarBorra()">Esvaziar Borra</button>
+      <button onclick="abastecerAgua()">+ Água</button>
+      <button onclick="abastecerCafe()">+ Café</button>
+      <button onclick="abastecerTroco()">+ Troco</button>
+    </div>
+
+    <div class="input-group">
+      <label for="valor">Valor (cêntimos):</label>
+      <input type="number" id="valor" min="0" value="50">
+    </div>
+
+    <div class="log" id="log"></div>
+
+    <h3>Estado da Máquina:</h3>
+    <pre id="estado"></pre>
+  </div>
+
+  <script>
+    class MaquinaDeCafe {
+      constructor(custoDoCafe, capacidadeAgua, capacidadeCafe, capacidadeBorra, capacidadeTroco) {
+        this.custoDoCafe = custoDoCafe;
+        this.capacidadeDepositoAgua = capacidadeAgua;
+        this.capacidadeDepositoCafe = capacidadeCafe;
+        this.capacidadeDepositoBorra = capacidadeBorra;
+        this.capacidadeDepositoTroco = capacidadeTroco;
+
+        this.dosesDeAgua = 0;
+        this.dosesDeCafe = 0;
+        this.dosesDeBorra = 0;
+        this.centimosParaTroco = 0;
+        this.centimosParaRecolha = 0;
+        this.centimosInseridos = 0;
+      }
+
+      recebeCentimos(centimos) {
+        this.centimosInseridos += centimos;
+        return `Inseriu ${centimos} cêntimos. Total inserido: ${this.centimosInseridos}`;
+      }
+
+      fazCafe() {
+        if (this.centimosInseridos < this.custoDoCafe) {
+          return `Valor insuficiente! Insira mais ${this.custoDoCafe - this.centimosInseridos} cêntimos.`;
+        }
+        if (this.dosesDeAgua <= 0 || this.dosesDeCafe <= 0) {
+          return "Impossível fazer café: falta água ou café.";
+        }
+        if (this.dosesDeBorra >= this.capacidadeDepositoBorra) {
+          return "Depósito de borra cheio. Esvazie antes de fazer mais café.";
+        }
+
+        this.dosesDeAgua--;
+        this.dosesDeCafe--;
+        this.dosesDeBorra++;
+        this.centimosInseridos -= this.custoDoCafe;
+        this.centimosParaRecolha += this.custoDoCafe;
+
+        let msgTroco = "";
+        if (this.centimosInseridos > 0) {
+          const troco = this.devolveTroco(this.centimosInseridos);
+          msgTroco = ` Troco devolvido: ${troco} cêntimos.`;
+        }
+
+        return "Café servido!" + msgTroco;
+      }
+
+      devolveTroco(valor) {
+        if (valor <= this.centimosParaTroco) {
+          this.centimosParaTroco -= valor;
+          this.centimosInseridos = 0;
+          return valor;
+        } else {
+          const devolvido = this.centimosParaTroco;
+          this.centimosParaTroco = 0;
+          this.centimosInseridos = 0;
+          return devolvido;
+        }
+      }
+
+      cancelaOperacao() {
+        const devolvido = this.devolveTroco(this.centimosInseridos);
+        return `Operação cancelada. Devolvido: ${devolvido} cêntimos.`;
+      }
+
+      esvaziaDepositoBorra() {
+        this.dosesDeBorra = 0;
+        return "Depósito de borra esvaziado.";
+      }
+
+      adicionaAgua(doses) {
+        this.dosesDeAgua = Math.min(this.dosesDeAgua + doses, this.capacidadeDepositoAgua);
+        return `Foram adicionadas ${doses} doses de água.`;
+      }
+
+      adicionaCafe(doses) {
+        this.dosesDeCafe = Math.min(this.dosesDeCafe + doses, this.capacidadeDepositoCafe);
+        return `Foram adicionadas ${doses} doses de café.`;
+      }
+
+      adicionaTroco(centimos) {
+        this.centimosParaTroco = Math.min(this.centimosParaTroco + centimos, this.capacidadeDepositoTroco);
+        return `Foram adicionados ${centimos} cêntimos para troco.`;
+      }
+
+      toString() {
+        return `
+Água: ${this.dosesDeAgua}/${this.capacidadeDepositoAgua} doses
+Café: ${this.dosesDeCafe}/${this.capacidadeDepositoCafe} doses
+Borra: ${this.dosesDeBorra}/${this.capacidadeDepositoBorra} doses
+Troco: ${this.centimosParaTroco}/${this.capacidadeDepositoTroco} cêntimos
+Inserido: ${this.centimosInseridos} cêntimos
+Recolha: ${this.centimosParaRecolha} cêntimos
+Custo do café: ${this.custoDoCafe} cêntimos`.trim();
+      }
+    }
+
+    // Instanciar a máquina
+    const maquina = new MaquinaDeCafe(50, 10, 10, 5, 100);
+
+    // DOM helpers
+    const log = document.getElementById("log");
+    const estado = document.getElementById("estado");
+    const valorInput = document.getElementById("valor");
+
+    function atualizarEstado() {
+      estado.textContent = maquina.toString();
+    }
+
+    function escreverLog(msg) {
+      log.textContent = msg;
+      atualizarEstado();
+    }
+
+    // Ações dos botões
+    function inserirCentimos() {
+      const valor = parseInt(valorInput.value);
+      if (valor > 0) {
+        const msg = maquina.recebeCentimos(valor);
+        escreverLog(msg);
+      }
+    }
+
+    function fazerCafe() {
+      const msg = maquina.fazCafe();
+      escreverLog(msg);
+    }
+
+    function cancelar() {
+      const msg = maquina.cancelaOperacao();
+      escreverLog(msg);
+    }
+
+    function esvaziarBorra() {
+      const msg = maquina.esvaziaDepositoBorra();
+      escreverLog(msg);
+    }
+
+    function abastecerAgua() {
+      const msg = maquina.adicionaAgua(5);
+      escreverLog(msg);
+    }
+
+    function abastecerCafe() {
+      const msg = maquina.adicionaCafe(5);
+      escreverLog(msg);
+    }
+
+    function abastecerTroco() {
+      const msg = maquina.adicionaTroco(50);
+      escreverLog(msg);
+    }
+
+    // Inicializar
+    atualizarEstado();
+  </script>
+</body>
+</

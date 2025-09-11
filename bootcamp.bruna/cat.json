@@ -1,0 +1,9 @@
+# Cria um ficheiro json com um objeto que tenha as seguintes propriedades(valor):
+
+
+{
+	"name": "Percy",
+	"species": "Black and white Cat",
+	"age": 3
+}
+
