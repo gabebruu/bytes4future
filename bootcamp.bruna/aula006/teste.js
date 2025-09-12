@@ -49,7 +49,10 @@ let calculadora = {
   },
 
   toJSON() {
-    return JSON.stringify(this);
+    return {
+      historico: this.historico,
+      ultimoResultad: this.ultimoRessultado
+    };
   },
 
   toString() {
