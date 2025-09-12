@@ -8,3 +8,4 @@ const palavras = ["bruna", "vick", "bytes"];
 const cores = ["rosa", "preto", "verde"];
 const soma = palavras.concat(cores)
 console.log(mapearComprimento(soma));
+
