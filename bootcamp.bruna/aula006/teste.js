@@ -10,9 +10,12 @@ let calculadora = {
 
     let resultado;
     switch (operador) {
-      case "+": resultado = a + b; break;
-      case "-": resultado = a - b; break;
-      case "*": resultado = a * b; break;
+      case "+": resultado = a + b;
+      break;
+      case "-": resultado = a - b;
+      break;
+      case "*": resultado = a * b;
+      break;
       case "/": resultado = a / b; break;
       default: throw new Error("Operador inválido");
     }
