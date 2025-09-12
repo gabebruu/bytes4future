@@ -55,10 +55,10 @@ let calculadora = {
 	},
 
 	toJSON() {
-		return JSON.stringify({
+		return {
 			historico: this.historico,
 			ultimoResultado: this.ultimoResultado.toString()
-		});
+		};
 	},
 
 	toString() {
