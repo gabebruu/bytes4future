@@ -10,7 +10,7 @@ let calculadora = {
 		let resultado = a + b;
 		this.historico.push(`${a} + ${b} = ${resultado}`);
 		this.ultimoResultado = resultado;
-		return calculadora;
+		return this;
 	},
 
 	subtrair(a, b) {
