@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>teste</title>
+</head>
+
+<body>
+	<h1>Gerador de Nomes</h1>
+    <button id = "button"> Gerar </button>
+    <p id = "saída"> Clique em Gerar </p>
+
+    <script>
+        const nomes = ["Victória", "Bruna", "Diego", "Guilherme", "Leandro", "Chico"];
+        const adjetivos = ["Forte", "Gentil", "Inteligente", "Engraçado(a)","Linda(o)", "louco para dar umazinha", "ta querendo", "Se tu me quiseres"];
+
+        const saída = document.getElementById ("saída");
+        const botão = document.getElementById ("button");
+
+        botão.addEventListener ("click", () => {
+            const nome = nomes[Math.floor (Math.random () * nomes.length )];
+            const adj = adjetivos [Math.floor (Math.random () * adjetivos.length)];
+            saída.textContent = nome + " " + adj;
+        })
+    </script>
+
+</body>
+
+</html>

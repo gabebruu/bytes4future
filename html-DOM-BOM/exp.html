@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador</title>
+</head>
+
+<body>
+    <p>Valor: <span id="contador">0</span></p>
+    <button onclick="conte()">Incrementar</button>
+
+    <script>
+        let valor = 0; // variável que guarda o número
+
+        function conte() {
+            valor++; // incrementa
+            document.getElementById("contador").innerText = valor; // atualiza o texto
+        }
+    </script>
+</body>
+
+</html>
